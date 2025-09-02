@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Wiadomości - RN Talk</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <img src="logo.png" alt="Logo" style="height:40px; vertical-align:middle; margin-right:10px;">
+    RN Talk - Wiadomości Prywatne
+    <div style="float:right;">
+        <a href="index.html" class="header-btn">Feed</a>
+        <a href="/logout" class="header-btn">Wyloguj</a>
+    </div>
+</header>
+
+<!-- Informacja o zalogowanym użytkowniku -->
+<div id="userStatus" style="padding:10px; text-align:center;"></div>
+
+<div class="chat-container">
+    <!-- Lewa kolumna: lista użytkowników -->
+    <div class="users-list">
+        <h3>Użytkownicy</h3>
+        <ul id="userSelect"></ul>
+    </div>
+
+    <!-- Prawa kolumna: rozmowa -->
+    <div class="chat-area">
+        <div id="chat" class="chat-messages"></div>
+        <form id="dmForm" class="chat-input" enctype="multipart/form-data">
+            <input type="text" name="content" placeholder="Napisz wiadomość..." required>
+            <input type="file" name="image" accept="image/*">
+            <button type="submit">Wyślij</button>
+        </form>
+    </div>
+</div>
+
+<script src="messages.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>RN Talk</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+        <div style="display:flex; align-items:center;">
+            <img src="logo.png" alt="Logo" style="height:40px; vertical-align:middle; margin-right:10px;">
+            RN Talk
+        </div>
+        <div style="text-align:right;">
+            <div id="userStatus" style="margin-bottom:5px;">Jesteś zalogowany jako: NIEZALOGOWANY</div>
+            <a href="login.html" class="header-btn">Zaloguj</a>
+            <a href="register.html" class="header-btn">Rejestracja</a>
+            <a href="messages.html" class="header-btn">Wiadomości</a>
+            <a href="/logout" class="header-btn">Wyloguj</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <!-- Dodawanie postów -->
+    <form id="postForm" method="POST" action="/post" enctype="multipart/form-data">
+        <input type="text" name="title" placeholder="Tytuł posta" required>
+        <textarea name="content" placeholder="Treść posta" required></textarea>
+        <input type="file" name="image" accept="image/*">
+        <button type="submit">Wyślij</button>
+    </form>
+
+    <!-- Feed -->
+    <div id="feed"></div>
+</main>
+
+<script src="script.js"></script>
+<script>
+// Pobranie informacji o zalogowanym użytkowniku
+async function updateUserStatus() {
+    try {
+        const res = await fetch('/session');
+        const data = await res.json();
+        document.getElementById('userStatus').textContent =
+            'Jesteś zalogowany jako: ' + (data.username || 'NIEZALOGOWANY');
+    } catch(err) {
+        console.error('Błąd pobierania statusu użytkownika:', err);
+    }
+}
+
+updateUserStatus();
+</script>
+</body>
+</html>
