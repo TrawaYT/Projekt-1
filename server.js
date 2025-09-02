@@ -63,7 +63,7 @@ db.serialize(() => {
 });
 
 // Pomocnicza funkcja sesji
-function getCurrentUser(req, res, callback) {
+function getCurrentUser(req, callback) {
     if (!req.session.userId) return callback(null);
     db.get('SELECT id, username FROM users WHERE id = ?', [req.session.userId], (err, row) => {
         if (err || !row) return callback(null);
@@ -75,7 +75,7 @@ function getCurrentUser(req, res, callback) {
 
 // Sesja
 app.get('/session', (req, res) => {
-    getCurrentUser(req, res, (user) => {
+    getCurrentUser(req, (user) => {
         if (user) res.json(user);
         else res.json({ username: "NIEZALOGOWANY" });
     });
@@ -87,7 +87,7 @@ app.post('/register', (req, res) => {
     db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, password], function(err) {
         if (err) return res.status(400).send('Błąd: ' + err.message);
         req.session.userId = this.lastID;
-        res.sendStatus(200);
+        res.redirect('/');
     });
 });
 
@@ -95,17 +95,17 @@ app.post('/register', (req, res) => {
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
     db.get('SELECT id FROM users WHERE username = ? AND password = ?', [username, password], (err, row) => {
-        if (err) return res.status(500).send('Błąd');
+        if (err) return res.status(500).send('Błąd serwera');
         if (!row) return res.status(401).send('Niepoprawne dane');
         req.session.userId = row.id;
-        res.sendStatus(200);
+        res.redirect('/');
     });
 });
 
 // Wylogowanie
 app.get('/logout', (req, res) => {
     req.session.destroy();
-    res.sendStatus(200);
+    res.redirect('/login.html');
 });
 
 // Dodawanie posta
@@ -115,7 +115,7 @@ app.post('/post', upload.single('image'), (req, res) => {
     const image = req.file ? '/uploads/' + req.file.filename : null;
     db.run('INSERT INTO posts (user_id, title, content, image) VALUES (?, ?, ?, ?)',
         [req.session.userId, title, content, image],
-        (err) => err ? res.status(500).send(err.message) : res.sendStatus(200));
+        (err) => err ? res.status(500).send(err.message) : res.redirect('/'));
 });
 
 // Pobieranie feedu
